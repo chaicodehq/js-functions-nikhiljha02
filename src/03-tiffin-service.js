@@ -41,12 +41,59 @@
  */
 export function createTiffinPlan({ name, mealType = "veg", days = 30 } = {}) {
   // Your code here
+  if (!name || typeof name !== "string" || name.trim() === "") return null;
+
+  const mealPrices = { veg: 80, nonveg: 120, jain: 90 };
+  if (!mealPrices.hasOwnProperty(mealType)) return null;
+
+  const dailyRate = mealPrices[mealType];
+  const totalCost = dailyRate * days;
+
+  return { name, mealType, days, dailyRate, totalCost };
 }
 
 export function combinePlans(...plans) {
   // Your code here
+  if (!plans.length) return null;
+
+  const mealBreakdown = {};
+  let totalRevenue = 0;
+
+  plans.forEach((plan) => {
+    if (plan && plan.mealType) {
+      mealBreakdown[plan.mealType] = (mealBreakdown[plan.mealType] || 0) + 1;
+      totalRevenue += plan.totalCost || 0;
+    }
+  });
+
+  return {
+    totalCustomers: plans.length,
+    totalRevenue,
+    mealBreakdown,
+  };
 }
 
 export function applyAddons(plan, ...addons) {
   // Your code here
+  if (!plan) return null;
+
+  const addonNames = [];
+  let extraRate = 0;
+
+  addons.forEach((addon) => {
+    if (addon && typeof addon.price === "number") {
+      extraRate += addon.price;
+      addonNames.push(addon.name);
+    }
+  });
+
+  const newDailyRate = plan.dailyRate + extraRate;
+  const newTotalCost = newDailyRate * plan.days;
+
+  return {
+    ...plan,
+    dailyRate: newDailyRate,
+    totalCost: newTotalCost,
+    addonNames,
+  };
 }

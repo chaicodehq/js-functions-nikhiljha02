@@ -33,4 +33,34 @@
  */
 export function calculateDosaOrder(type, quantity = 1, isSpicy = false) {
   // Your code here
+  if (typeof type !== "string" || quantity <= 0 || Number.isNaN(quantity)) return null;
+
+  // Menu
+  const menu = [
+    { name: "plain", price: 40 },
+    { name: "masala", price: 60 },
+    { name: "onion", price: 50 },
+    { name: "butter", price: 70 },
+    { name: "paper", price: 90 },
+    { name: "cheese", price: 80 },
+  ];
+
+  // Find the dosa
+  const dish = menu.find((ele) => ele.name === type);
+  if (!dish) return null;
+
+  // Calculate price per dosa
+  const pricePerDosa = dish.price + (isSpicy ? 10 : 0);
+
+  // Calculate total
+  const total = pricePerDosa * quantity;
+
+  // Return order object
+  return {
+    type: dish.name,
+    quantity: quantity,
+    pricePerDosa: pricePerDosa,
+    total: total,
+  };
+
 }
